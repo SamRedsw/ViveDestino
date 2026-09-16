@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class ViveDestinoApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ViveDestinoApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ViveDestinoApplication.class, args);
+    }
 
 }
