@@ -29,7 +29,7 @@ public class Experiencia {
     private Double precio;
 
     @NotNull(message = "La duración es obligatoria")
-    @Min(value = 1, message = "La duración mínima debe ser al menos 1")
+    @Min(value = 2, message = "La duración mínima debe ser al menos 2 horas")
     @Column(nullable = false)
     private Integer duracion;
 
