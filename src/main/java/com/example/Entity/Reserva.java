@@ -8,8 +8,6 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "reservas")
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Reserva {
 
     @Id

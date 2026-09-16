@@ -4,32 +4,53 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "pagos")
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Pago {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id_pago")
+    private Long idPago;
 
-    @NotNull(message = "El valor del pago es obligatorio")
-    @Positive(message = "El valor debe ser un monto positivo")
-    @Column(nullable = false)
-    private Double valor;
+    @NotNull(message = "El monto del pago es obligatorio")
+    @DecimalMin(value = "0.01", message = "El monto debe ser un valor positivo")
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal monto;
 
-    @NotBlank(message = "La referencia de pago es obligatoria")
-    @Column(nullable = false, unique = true, length = 100)
-    private String referencia;
+    @NotBlank(message = "El método de pago es obligatorio")
+    @Column(name = "metodo_pago", nullable = false, length = 50)
+    private String metodoPago;
 
-    @NotBlank(message = "El estado es obligatorio")
-    @Column(nullable = false, length = 50)
-    private String estado;
+    @NotBlank(message = "La referencia de transacción es obligatoria")
+    @Column(name = "referencia_transaccion", nullable = false, unique = true, length = 100)
+    private String referenciaTransaccion;
 
-    // Relación 1:1 - Un pago pertenece a una única reserva
+    @NotNull(message = "El estado del pago es obligatorio")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado_pago", nullable = false, length = 20)
+    private EstadoPago estadoPago;
+
+    @Column(name = "fecha_pago", nullable = false, updatable = false)
+    private LocalDateTime fechaPago;
+
+    // Relación 1:1 -> Pertenece a una única reserva
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reserva_id", nullable = false, unique = true)
+    @JoinColumn(name = "id_reserva", nullable = false, unique = true)
     private Reserva reserva;
+
+    @PrePersist
+    public void prePersist() {
+        this.fechaPago = LocalDateTime.now();
+    }
+
+    // Enum del Dominio para Pagos
+    public enum EstadoPago {
+        APROBADO,
+        RECHAZADO
+    }
 }
