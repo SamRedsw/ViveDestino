@@ -5,13 +5,16 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "usuarios")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Usuario {
 
     @Id
@@ -25,39 +28,56 @@ public class Usuario {
 
     @NotBlank(message = "El correo es obligatorio")
     @Email(message = "Formato de correo inválido")
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(nullable = false, unique = true, length = 150)
     private String correo;
 
     @NotBlank(message = "La contraseña es obligatoria")
-    @Column(name = "password_hash", nullable = false)
-    private String passwordHash;
+    @Column(nullable = false, length = 255)
+    private String password;
 
-    @NotBlank(message = "El teléfono es obligatorio")
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     private String telefono;
 
-    @NotBlank(message = "El rol es obligatorio")
-    @Column(nullable = false, length = 50)
-    private String rol; // VIAJERO, OPERADOR, GUIA, ADMIN
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private Rol rol;
 
-    @Column(length = 255)
-    private String fotoPerfil;
-
-    @Column(nullable = false)
-    private String estado = "ACTIVO";
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private EstadoUsuario estado;
 
     @Column(name = "fecha_registro", nullable = false, updatable = false)
     private LocalDateTime fechaRegistro;
 
+    @Builder.Default
+    @OneToMany(mappedBy = "organizador", fetch = FetchType.LAZY)
+    private List<Experiencia> experienciasOrganizadas = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "guia", fetch = FetchType.LAZY)
+    private List<Salida> salidasAsignadas = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "viajero", fetch = FetchType.LAZY)
+    private List<Reserva> reservas = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "viajero", fetch = FetchType.LAZY)
+    private List<Calificacion> calificaciones = new ArrayList<>();
+
     @PrePersist
-    protected void onCreate() {
+    public void prePersist() {
         this.fechaRegistro = LocalDateTime.now();
+        if (this.estado == null) {
+            this.estado = EstadoUsuario.ACTIVO;
+        }
     }
 
-    // Relaciones según la arquitectura del sistema
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Reserva> reservas;
+    public enum Rol {
+        VIAJERO, OPERADOR, GUIA, ADMIN
+    }
 
-    @OneToMany(mappedBy = "organizador", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Experiencia> experiencias;
+    public enum EstadoUsuario {
+        ACTIVO, INACTIVO, SUSPENDIDO
+    }
 }

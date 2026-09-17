@@ -32,17 +32,14 @@ public class Calificacion {
     @Column(name = "fecha_creacion", nullable = false, updatable = false)
     private LocalDateTime fechaCreacion;
 
-    // Relación 1:1 -> Vinculada a una única reserva completada
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_reserva", nullable = false, unique = true)
     private Reserva reserva;
 
-    // Relación N:1 -> Viajero que redacta la calificación
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_viajero", nullable = false)
     private Usuario viajero;
 
-    // Relación N:1 -> Experiencia calificada
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_experiencia", nullable = false)
     private Experiencia experiencia;
