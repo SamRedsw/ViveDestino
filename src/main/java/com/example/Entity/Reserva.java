@@ -3,45 +3,63 @@ package com.example.Entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
-import java.time.LocalDate;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "reservas")
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Reserva {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id_reserva")
+    private Long idReserva;
 
-    @NotBlank(message = "El nombre del viajero es obligatorio")
-    @Column(nullable = false, length = 100)
-    private String viajero;
+    @NotNull(message = "La cantidad de personas es obligatoria")
+    @Min(value = 1, message = "Debe reservar al menos para 1 persona")
+    @Column(name = "cantidad_personas", nullable = false)
+    private Integer cantidadPersonas;
 
-    @NotNull(message = "La fecha de salida es obligatoria")
-    @Column(nullable = false)
-    private LocalDate salida;
+    @NotNull(message = "El total a pagar es obligatorio")
+    @Column(name = "total_pagar", nullable = false, precision = 10, scale = 2)
+    private BigDecimal totalPagar;
 
-    @NotNull(message = "El número de personas es obligatorio")
-    @Min(value = 1, message = "Debe haber al menos 1 persona")
-    @Column(nullable = false)
-    private Integer personas;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado_reserva", nullable = false, length = 20)
+    private EstadoReserva estadoReserva;
 
-    @NotNull(message = "El total es obligatorio")
-    @Positive(message = "El total debe ser un valor positivo")
-    @Column(nullable = false)
-    private Double total;
+    @Column(name = "fecha_reserva", nullable = false, updatable = false)
+    private LocalDateTime fechaReserva;
 
-    @NotBlank(message = "El estado es obligatorio")
-    @Column(nullable = false, length = 50)
-    private String estado;
-
-    // Relación N:1 - Muchas reservas pertenecen a un usuario
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario usuario;
+    @JoinColumn(name = "id_viajero", nullable = false)
+    private Usuario viajero;
 
-    // Relación 1:1 - Una reserva registra un pago
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_salida", nullable = false)
+    private Salida salida;
+
     @OneToOne(mappedBy = "reserva", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Pago pago;
+
+    @OneToOne(mappedBy = "reserva", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Calificacion calificacion;
+
+    @PrePersist
+    public void prePersist() {
+        this.fechaReserva = LocalDateTime.now();
+        if (this.estadoReserva == null) {
+            this.estadoReserva = EstadoReserva.PENDIENTE;
+        }
+    }
+
+    public enum EstadoReserva {
+        PENDIENTE, CONFIRMADA, CANCELADA, COMPLETADA
+    }
 }
