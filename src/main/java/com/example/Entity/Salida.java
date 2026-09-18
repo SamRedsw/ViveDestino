@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,9 @@ import java.util.List;
 @Entity
 @Table(name = "salidas")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Salida {
 
     @Id
@@ -21,7 +25,7 @@ public class Salida {
 
     @NotNull(message = "La fecha de salida es obligatoria")
     @Column(name = "fecha_salida", nullable = false)
-    private LocalDate fechaSalida;
+    private LocalDateTime fechaSalida;
 
     @NotNull(message = "La hora de salida es obligatoria")
     @Column(name = "hora_salida", nullable = false)
@@ -57,7 +61,6 @@ public class Salida {
     private Usuario guia;
 
     // Relación 1:N -> Reservas realizadas para esta fecha específica
-    @Builder.Default
     @OneToMany(mappedBy = "salida", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Reserva> reservas = new ArrayList<>();
 

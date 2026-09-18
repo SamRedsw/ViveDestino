@@ -12,6 +12,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Usuario {
 
     @Id
@@ -30,20 +31,22 @@ public class Usuario {
 
     @NotBlank(message = "La contraseña es obligatoria")
     @Column(name = "password_hash", nullable = false)
-    private String passwordHash;
+    private String password;
 
     @NotBlank(message = "El teléfono es obligatorio")
     @Column(nullable = false, length = 20)
     private String telefono;
 
-    @NotBlank(message = "El rol es obligatorio")
-    @Column(nullable = false, length = 50)
-    private String rol; // VIAJERO, OPERADOR, GUIA, ADMIN
+    @NotNull(message = "El rol es obligatorio")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private RolUsuario rol;
 
     @Column(length = 255)
     private String fotoPerfil;
 
-    @Column(nullable = false)
+    @Builder.Default
+    @Column(nullable = false, length = 20)
     private String estado = "ACTIVO";
 
     @Column(name = "fecha_registro", nullable = false, updatable = false)
@@ -60,4 +63,11 @@ public class Usuario {
 
     @OneToMany(mappedBy = "organizador", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Experiencia> experiencias;
+
+    public enum RolUsuario {
+        VIAJERO,
+        GUIA,
+        ADMINISTRADOR,
+        OPERADOR
+    }
 }

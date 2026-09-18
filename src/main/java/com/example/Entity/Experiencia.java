@@ -11,6 +11,9 @@ import java.util.List;
 @Entity
 @Table(name = "experiencias")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Experiencia {
 
     @Id
@@ -20,7 +23,7 @@ public class Experiencia {
 
     @NotBlank(message = "El título de la experiencia es obligatorio")
     @Column(nullable = false, length = 150)
-    private String titulo;
+    private String nombre;
 
     @NotBlank(message = "La descripción es obligatoria")
     @Column(nullable = false, columnDefinition = "TEXT")

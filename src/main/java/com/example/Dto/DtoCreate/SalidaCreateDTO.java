@@ -7,7 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 @NoArgsConstructor
@@ -20,11 +22,16 @@ public class SalidaCreateDTO {
     @NotNull(message = "El ID del guía es obligatorio")
     private Long idGuia;
 
-    @NotNull(message = "La fecha y hora son obligatorias")
-    @Future(message = "La fecha debe ser futura")
-    private LocalDateTime fechaHora;
+    @NotNull(message = "La fecha de salida es obligatoria")
+    private LocalDateTime fechaSalida;
 
-    @NotNull(message = "El cupo máximo es obligatorio")
+    @NotNull(message = "La hora de salida es obligatoria")
+    private LocalTime horaSalida;
+
+    @NotNull(message = "La fecha de retorno es obligatoria")
+    private LocalDate fechaRetorno;
+
+    @NotNull(message = "Los cupos totales son obligatorios")
     @Min(value = 1, message = "Debe haber al menos 1 cupo")
-    private Integer cupoMaximo;
+    private Integer cuposTotales;
 }

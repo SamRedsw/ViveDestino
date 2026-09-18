@@ -1,12 +1,15 @@
 package com.example.Dto;
 
+import com.example.Entity.Usuario;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UsuarioResponseDTO {
@@ -15,7 +18,8 @@ public class UsuarioResponseDTO {
     private String nombre;
     private String correo;
     private String telefono;
-    private String rol;
+    private Usuario.RolUsuario rol;
+    private String fotoPerfil;
     private String estado;
     private LocalDateTime fechaRegistro;
 }

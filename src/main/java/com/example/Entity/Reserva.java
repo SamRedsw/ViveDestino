@@ -3,45 +3,64 @@ package com.example.Entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "reservas")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Reserva {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @NotBlank(message = "El nombre del viajero es obligatorio")
-    @Column(nullable = false, length = 100)
-    private String viajero;
-
-    @NotNull(message = "La fecha de salida es obligatoria")
-    @Column(nullable = false)
-    private LocalDate salida;
+    @Column(name = "id_reserva")
+    private Long idReserva;
 
     @NotNull(message = "El número de personas es obligatorio")
     @Min(value = 1, message = "Debe haber al menos 1 persona")
-    @Column(nullable = false)
-    private Integer personas;
+    @Column(name = "cantidad_personas", nullable = false)
+    private Integer cantidadPersonas;
 
     @NotNull(message = "El total es obligatorio")
     @Positive(message = "El total debe ser un valor positivo")
-    @Column(nullable = false)
-    private Double total;
+    @Column(name = "total_pagar", nullable = false)
+    private Double totalPagar;
 
     @NotBlank(message = "El estado es obligatorio")
-    @Column(nullable = false, length = 50)
-    private String estado;
+    @Column(name = "estado_reserva", nullable = false, length = 50)
+    private String estadoReserva;
 
-    // Relación N:1 - Muchas reservas pertenecen a un usuario
+    @Column(name = "fecha_reserva", nullable = false, updatable = false)
+    private LocalDateTime fechaReserva;
+
+    @Column(nullable = false)
+    private Boolean asistio;
+
+    // Relación N:1 -> Usuario (Viajero que realiza la reserva)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
-    // Relación 1:1 - Una reserva registra un pago
+    // Relación N:1 -> Salida programada (Entidad Salida, NO LocalDate)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_salida", nullable = false)
+    private Salida salida;
+
+    // Relación 1:1 -> Pago asociado a la reserva
     @OneToOne(mappedBy = "reserva", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Pago pago;
+
+    // Relación 1:1 -> Calificación registrada post-experiencia
+    @OneToOne(mappedBy = "reserva", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Calificacion calificacion;
+
+    @PrePersist
+    public void prePersist() {
+        this.fechaReserva = LocalDateTime.now();
+        if (this.asistio == null) {
+            this.asistio = false;
+        }
+    }
 }
