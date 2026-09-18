@@ -25,7 +25,7 @@ public class PagoServiceImpl implements PagoService {
         Reserva reserva = reservaRepository.findById(dto.getIdReserva())
                 .orElseThrow(() -> new ResourceNotFoundException("Reserva no encontrada con ID: " + dto.getIdReserva()));
 
-        if ("CANCELADA".equalsIgnoreCase(reserva.getEstadoReserva())) {
+        if (Reserva.EstadoReserva.CANCELADA.equals(reserva.getEstadoReserva())) {
             throw new RuntimeException("No se puede procesar el pago de una reserva cancelada");
         }
 
@@ -37,12 +37,12 @@ public class PagoServiceImpl implements PagoService {
                 .reserva(reserva)
                 .monto(dto.getMonto())
                 .metodoPago(dto.getMetodoPago())
-                .estadoPago(Pago.EstadoPago.APROBADO)
+                .estadoPago(Pago.EstadoPago.COMPLETADO)
                 .build();
 
         Pago guardado = pagoRepository.save(pago);
 
-        reserva.setEstadoReserva("CONFIRMADA");
+        reserva.setEstadoReserva(Reserva.EstadoReserva.CONFIRMADA);
         reservaRepository.save(reserva);
 
         return mapToResponseDTO(guardado);

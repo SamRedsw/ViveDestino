@@ -29,9 +29,8 @@ public class Pago {
     @Column(name = "metodo_pago", nullable = false, length = 50)
     private String metodoPago;
 
-    @NotBlank(message = "La referencia es obligatoria")
-    @Column(nullable = false, unique = true, length = 100)
-    private String referencia;
+    @Column(name = "referencia_transaccion")
+    private String referenciaTransaccion;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "estado_pago", nullable = false, length = 20)
