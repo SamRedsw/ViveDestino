@@ -1,5 +1,6 @@
 package com.example.Dto.DtoCreate;
 
+import com.example.Entity.Usuario;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,9 +23,6 @@ public class ExperienciaCreateDTO {
     @NotBlank(message = "La descripción es obligatoria")
     private String descripcion;
 
-    @NotBlank(message = "La categoría es obligatoria")
-    private String categoria;
-
     @NotBlank(message = "La dificultad es obligatoria")
     private String dificultad;
 
@@ -35,6 +33,12 @@ public class ExperienciaCreateDTO {
     private BigDecimal precio;
 
     private String requisitos;
+
     private String politicaCancelacion;
+
+    private Usuario organizador;
+
+    private String ubicacion;
+
     private List<String> imagenesUrl;
 }

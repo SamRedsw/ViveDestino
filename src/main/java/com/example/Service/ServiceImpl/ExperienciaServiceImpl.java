@@ -26,10 +26,11 @@ public class ExperienciaServiceImpl implements ExperienciaService {
         Experiencia experiencia = Experiencia.builder()
                 .nombre(dto.getNombre())
                 .descripcion(dto.getDescripcion())
-                .ubicacion(dto.getCategoria())
+                .ubicacion(dto.getUbicacion())
                 .precio(dto.getPrecio())
                 .dificultad(Experiencia.Dificultad.valueOf(dto.getDificultad().toUpperCase()))
                 .estado(Experiencia.EstadoExperiencia.PUBLICADA)
+                .organizador(dto.getOrganizador())
                 .build();
 
         Experiencia guardada = experienciaRepository.save(experiencia);

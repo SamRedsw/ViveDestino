@@ -17,7 +17,6 @@ public class ExperienciaResponseDTO {
     private Long idExperiencia;
     private String nombre;
     private String descripcion;
-    private String categoria;
     private String dificultad;
     private String duracion;
     private BigDecimal precio;
