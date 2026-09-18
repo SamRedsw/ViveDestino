@@ -44,6 +44,9 @@ public class Reserva {
     @JoinColumn(name = "id_salida", nullable = false)
     private Salida salida;
 
+    @Column(name = "asistio")
+    private Boolean asistio = false;
+
     @OneToOne(mappedBy = "reserva", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Pago pago;
 

@@ -29,7 +29,7 @@ public class ExperienciaServiceImpl implements ExperienciaService {
                 .ubicacion(dto.getUbicacion())
                 .precio(dto.getPrecio())
                 .dificultad(Experiencia.Dificultad.valueOf(dto.getDificultad().toUpperCase()))
-                .estado(Experiencia.EstadoExperiencia.PUBLICADA)
+                .estado(Experiencia.EstadoExperiencia.ACTIVA)
                 .organizador(dto.getOrganizador())
                 .build();
 

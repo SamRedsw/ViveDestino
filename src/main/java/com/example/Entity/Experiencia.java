@@ -30,9 +30,6 @@ public class Experiencia {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String descripcion;
 
-    @NotBlank(message = "La categoría es obligatoria")
-    @Column(nullable = false, length = 50)
-    private String categoria;
 
     @NotBlank(message = "La ubicación es obligatoria")
     @Column(nullable = false, length = 150)
@@ -46,7 +43,7 @@ public class Experiencia {
     @NotNull(message = "El precio base es obligatorio")
     @DecimalMin(value = "0.00", message = "El precio debe ser un valor positivo")
     @Column(name = "precio_base", nullable = false, precision = 10, scale = 2)
-    private BigDecimal precioBase;
+    private BigDecimal precio;
 
     @Column(columnDefinition = "TEXT")
     private String requisitos;
@@ -54,8 +51,8 @@ public class Experiencia {
     @Column(name = "politica_cancelacion", columnDefinition = "TEXT")
     private String politicaCancelacion;
 
-    @Column(length = 50)
-    private String duracion;
+    @Column(name = "duracion_horas")
+    private Integer duracionHoras;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)

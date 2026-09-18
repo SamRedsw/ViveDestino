@@ -36,7 +36,7 @@ public class CalificacionServiceImpl implements CalificacionService {
 
         Calificacion calificacion = Calificacion.builder()
                 .reserva(reserva)
-                .viajero(reserva.getUsuario())
+                .viajero(reserva.getViajero())
                 .experiencia(reserva.getSalida().getExperiencia())
                 .puntaje(dto.getPuntaje())
                 .comentario(dto.getComentario())

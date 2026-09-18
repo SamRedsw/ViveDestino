@@ -45,16 +45,15 @@ public class ReservaServiceImpl implements ReservaService {
         salida.setCuposDisponibles(salida.getCuposDisponibles() - dto.getCantidadPersonas());
         salidaRepository.save(salida);
 
-        Double totalCalculado = salida.getExperiencia().getPrecio()
-                .multiply(BigDecimal.valueOf(dto.getCantidadPersonas()))
-                .doubleValue();
+        BigDecimal totalPagar = salida.getExperiencia().getPrecio()
+                .multiply(BigDecimal.valueOf(dto.getCantidadPersonas()));
 
         Reserva reserva = Reserva.builder()
-                .usuario(usuario)
+                .viajero(usuario)
                 .salida(salida)
                 .cantidadPersonas(dto.getCantidadPersonas())
-                .totalPagar(totalCalculado)
-                .estadoReserva("PENDIENTE")
+                .totalPagar(totalPagar)
+                .estadoReserva(Reserva.EstadoReserva.PENDIENTE)
                 .asistio(false)
                 .build();
 
@@ -69,7 +68,7 @@ public class ReservaServiceImpl implements ReservaService {
             throw new ResourceNotFoundException("Usuario no encontrado con ID: " + idUsuario);
         }
 
-        return reservaRepository.findByUsuario_IdUsuario(idUsuario)
+        return reservaRepository.findByViajero_IdUsuario(idUsuario)
                 .stream()
                 .map(this::mapToResponseDTO)
                 .collect(Collectors.toList());
@@ -81,7 +80,7 @@ public class ReservaServiceImpl implements ReservaService {
         Reserva reserva = reservaRepository.findById(idReserva)
                 .orElseThrow(() -> new ResourceNotFoundException("Reserva no encontrada con ID: " + idReserva));
 
-        if ("CANCELADA".equalsIgnoreCase(reserva.getEstadoReserva())) {
+        if (Reserva.EstadoReserva.CANCELADA.equals(reserva.getEstadoReserva())) {
             throw new RuntimeException("La reserva ya se encuentra cancelada");
         }
 
@@ -89,7 +88,7 @@ public class ReservaServiceImpl implements ReservaService {
         salida.setCuposDisponibles(salida.getCuposDisponibles() + reserva.getCantidadPersonas());
         salidaRepository.save(salida);
 
-        reserva.setEstadoReserva("CANCELADA");
+        reserva.setEstadoReserva(Reserva.EstadoReserva.CANCELADA);
         Reserva actualizada = reservaRepository.save(reserva);
 
         return mapToResponseDTO(actualizada);
@@ -98,14 +97,14 @@ public class ReservaServiceImpl implements ReservaService {
     private ReservaResponseDTO mapToResponseDTO(Reserva r) {
         return ReservaResponseDTO.builder()
                 .idReserva(r.getIdReserva())
-                .idUsuario(r.getUsuario().getIdUsuario())
-                .nombreViajero(r.getUsuario().getNombre())
+                .idUsuario(r.getViajero().getIdUsuario())
+                .nombreViajero(r.getViajero().getNombre())
                 .idSalida(r.getSalida().getIdSalida())
                 .nombreExperiencia(r.getSalida().getExperiencia().getNombre())
                 .fechaSalida(r.getSalida().getFechaSalida())
                 .cantidadPersonas(r.getCantidadPersonas())
-                .totalPagar(BigDecimal.valueOf(r.getTotalPagar()))
-                .estadoReserva(r.getEstadoReserva())
+                .totalPagar(r.getTotalPagar())
+                .estadoReserva(r.getEstadoReserva() != null ? r.getEstadoReserva().name() : null)
                 .asistio(r.getAsistio())
                 .fechaReserva(r.getFechaReserva())
                 .build();

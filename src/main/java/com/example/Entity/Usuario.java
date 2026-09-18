@@ -73,7 +73,7 @@ public class Usuario {
     public void prePersist() {
         this.fechaRegistro = LocalDateTime.now();
         if (this.estado == null) {
-            this.estado = EstadoUsuario.ACTIVO;
+            this.estado = "ACTIVO";
         }
     }
 

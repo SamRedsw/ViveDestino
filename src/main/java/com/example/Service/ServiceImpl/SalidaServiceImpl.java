@@ -40,9 +40,9 @@ public class SalidaServiceImpl implements SalidaService {
                 .fechaSalida(dto.getFechaSalida())
                 .horaSalida(dto.getHoraSalida())
                 .fechaRetorno(dto.getFechaRetorno())
-                .cuposTotales(dto.getCuposTotales())
+                .cupoMaximo(dto.getCuposTotales())
                 .cuposDisponibles(dto.getCuposTotales())
-                .estadoOperativo(Salida.EstadoOperativo.PROGRAMADA)
+                .estadoOperativo(Salida.EstadoSalida.PROGRAMADA)
                 .build();
 
         Salida guardada = salidaRepository.save(salida);
@@ -81,7 +81,7 @@ public class SalidaServiceImpl implements SalidaService {
                 .fechaSalida(s.getFechaSalida())
                 .horaSalida(s.getHoraSalida())
                 .fechaRetorno(s.getFechaRetorno())
-                .cupoTotal(s.getCuposTotales())
+                .cupoTotal(s.getCupoMaximo())
                 .cuposDisponibles(s.getCuposDisponibles())
                 .estadoOperativo(s.getEstadoOperativo().name())
                 .build();
