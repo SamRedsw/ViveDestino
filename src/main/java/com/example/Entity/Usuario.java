@@ -32,19 +32,23 @@ public class Usuario {
     private String correo;
 
     @NotBlank(message = "La contraseña es obligatoria")
-    @Column(nullable = false, length = 255)
+    @Column(name = "password_hash", nullable = false)
     private String password;
 
     @Column(length = 20)
     private String telefono;
 
+    @NotNull(message = "El rol es obligatorio")
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private Rol rol;
+    @Column(nullable = false, length = 30)
+    private RolUsuario rol;
 
-    @Enumerated(EnumType.STRING)
+    @Column(length = 255)
+    private String fotoPerfil;
+
+    @Builder.Default
     @Column(nullable = false, length = 20)
-    private EstadoUsuario estado;
+    private String estado = "ACTIVO";
 
     @Column(name = "fecha_registro", nullable = false, updatable = false)
     private LocalDateTime fechaRegistro;
@@ -77,7 +81,13 @@ public class Usuario {
         VIAJERO, OPERADOR, GUIA, ADMIN
     }
 
-    public enum EstadoUsuario {
-        ACTIVO, INACTIVO, SUSPENDIDO
+    @OneToMany(mappedBy = "organizador", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Experiencia> experiencias;
+
+    public enum RolUsuario {
+        VIAJERO,
+        GUIA,
+        ADMINISTRADOR,
+        OPERADOR
     }
 }

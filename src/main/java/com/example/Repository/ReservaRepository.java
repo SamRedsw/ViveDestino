@@ -9,6 +9,11 @@ import java.util.List;
 @Repository
 public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 
-    //para consultar las reservas de un usuario especifico
-    List<Reserva> findByUsuarioId(Long usuarioId);
+    List<Reserva> findByUsuario_IdUsuario(Long idUsuario);
+
+    // Consultar reservas pertenecientes a una salida operativa específica
+    List<Reserva> findBySalida_IdSalida(Long idSalida);
+
+    // Consultar reservas por salida y estado
+    List<Reserva> findBySalida_IdSalidaAndEstadoReserva(Long idSalida, String estadoReserva);
 }

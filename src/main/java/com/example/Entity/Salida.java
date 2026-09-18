@@ -4,14 +4,15 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "salidas")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -22,10 +23,17 @@ public class Salida {
     @Column(name = "id_salida")
     private Long idSalida;
 
-    @NotNull(message = "La fecha y hora de salida son obligatorias")
-    @Future(message = "La fecha de salida debe ser futura")
-    @Column(name = "fecha_hora", nullable = false)
-    private LocalDateTime fechaHora;
+    @NotNull(message = "La fecha de salida es obligatoria")
+    @Column(name = "fecha_salida", nullable = false)
+    private LocalDateTime fechaSalida;
+
+    @NotNull(message = "La hora de salida es obligatoria")
+    @Column(name = "hora_salida", nullable = false)
+    private LocalTime horaSalida;
+  
+    @NotNull(message = "La fecha de retorno es obligatoria")
+    @Column(name = "fecha_retorno", nullable = false)
+    private LocalDate fechaRetorno;
 
     @NotNull(message = "El cupo máximo es obligatorio")
     @Min(value = 1, message = "Debe haber al menos 1 cupo")

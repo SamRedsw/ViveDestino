@@ -4,9 +4,11 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -30,7 +32,7 @@ public class ExperienciaCreateDTO {
 
     @NotNull(message = "El precio base es obligatorio")
     @Min(value = 0, message = "El precio debe ser positivo")
-    private Double precioBase;
+    private BigDecimal precio;
 
     private String requisitos;
     private String politicaCancelacion;
