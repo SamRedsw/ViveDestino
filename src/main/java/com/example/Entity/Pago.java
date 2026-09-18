@@ -20,7 +20,7 @@ public class Pago {
     @Column(name = "id_pago")
     private Long idPago;
 
-    @NotNull(message = "El monto del pago es obligatorio")
+    @NotNull(message = "El monto es obligatorio")
     @DecimalMin(value = "0.01", message = "El monto debe ser un valor positivo")
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal monto;
@@ -29,11 +29,10 @@ public class Pago {
     @Column(name = "metodo_pago", nullable = false, length = 50)
     private String metodoPago;
 
-    @NotBlank(message = "La referencia de transacción es obligatoria")
-    @Column(name = "referencia_transaccion", nullable = false, unique = true, length = 100)
-    private String referenciaTransaccion;
+    @NotBlank(message = "La referencia es obligatoria")
+    @Column(nullable = false, unique = true, length = 100)
+    private String referencia;
 
-    @NotNull(message = "El estado del pago es obligatorio")
     @Enumerated(EnumType.STRING)
     @Column(name = "estado_pago", nullable = false, length = 20)
     private EstadoPago estadoPago;
@@ -41,7 +40,6 @@ public class Pago {
     @Column(name = "fecha_pago", nullable = false, updatable = false)
     private LocalDateTime fechaPago;
 
-    // Relación 1:1 -> Pertenece a una única reserva
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_reserva", nullable = false, unique = true)
     private Reserva reserva;
@@ -49,11 +47,12 @@ public class Pago {
     @PrePersist
     public void prePersist() {
         this.fechaPago = LocalDateTime.now();
+        if (this.estadoPago == null) {
+            this.estadoPago = EstadoPago.COMPLETADO;
+        }
     }
 
-    // Enum del Dominio para Pagos
     public enum EstadoPago {
-        APROBADO,
-        RECHAZADO
+        PENDIENTE, COMPLETADO, RECHAZADO, REEMBOLSADO
     }
 }

@@ -3,6 +3,8 @@ package com.example.Entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,49 +20,45 @@ public class Reserva {
     @Column(name = "id_reserva")
     private Long idReserva;
 
-    @NotNull(message = "El número de personas es obligatorio")
-    @Min(value = 1, message = "Debe haber al menos 1 persona")
+    @NotNull(message = "La cantidad de personas es obligatoria")
+    @Min(value = 1, message = "Debe reservar al menos para 1 persona")
     @Column(name = "cantidad_personas", nullable = false)
     private Integer cantidadPersonas;
 
-    @NotNull(message = "El total es obligatorio")
-    @Positive(message = "El total debe ser un valor positivo")
-    @Column(name = "total_pagar", nullable = false)
-    private Double totalPagar;
+    @NotNull(message = "El total a pagar es obligatorio")
+    @Column(name = "total_pagar", nullable = false, precision = 10, scale = 2)
+    private BigDecimal totalPagar;
 
-    @NotBlank(message = "El estado es obligatorio")
-    @Column(name = "estado_reserva", nullable = false, length = 50)
-    private String estadoReserva;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado_reserva", nullable = false, length = 20)
+    private EstadoReserva estadoReserva;
 
     @Column(name = "fecha_reserva", nullable = false, updatable = false)
     private LocalDateTime fechaReserva;
 
-    @Column(nullable = false)
-    private Boolean asistio;
-
-    // Relación N:1 -> Usuario (Viajero que realiza la reserva)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_usuario", nullable = false)
-    private Usuario usuario;
+    @JoinColumn(name = "id_viajero", nullable = false)
+    private Usuario viajero;
 
-    // Relación N:1 -> Salida programada (Entidad Salida, NO LocalDate)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_salida", nullable = false)
     private Salida salida;
 
-    // Relación 1:1 -> Pago asociado a la reserva
     @OneToOne(mappedBy = "reserva", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Pago pago;
 
-    // Relación 1:1 -> Calificación registrada post-experiencia
     @OneToOne(mappedBy = "reserva", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Calificacion calificacion;
 
     @PrePersist
     public void prePersist() {
         this.fechaReserva = LocalDateTime.now();
-        if (this.asistio == null) {
-            this.asistio = false;
+        if (this.estadoReserva == null) {
+            this.estadoReserva = EstadoReserva.PENDIENTE;
         }
+    }
+
+    public enum EstadoReserva {
+        PENDIENTE, CONFIRMADA, CANCELADA, COMPLETADA
     }
 }

@@ -1,7 +1,7 @@
 package com.example.Entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
@@ -21,10 +21,10 @@ public class ImagenExperiencia {
     @Column(name = "url_imagen", nullable = false, length = 255)
     private String urlImagen;
 
+    @Builder.Default
     @Column(nullable = false)
-    private Integer orden;
+    private Integer orden = 1;
 
-    // Relación N:1 -> Experiencia a la que pertenece la imagen
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_experiencia", nullable = false)
     private Experiencia experiencia;
