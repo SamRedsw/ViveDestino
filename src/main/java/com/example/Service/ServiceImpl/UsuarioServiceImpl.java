@@ -9,6 +9,7 @@ import com.example.Exception.ResourceNotFoundException;
 import com.example.Repository.UsuarioRepository;
 import com.example.Service.UsuarioService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Override
     @Transactional
     public UsuarioResponseDTO registrarUsuario(UsuarioRegistrationDTO dto) {
@@ -31,7 +34,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario usuario = Usuario.builder()
                 .nombre(dto.getNombre())
                 .correo(dto.getCorreo())
-                .password(dto.getPassword())
+                .password(passwordEncoder.encode(dto.getPassword())) //encriptacion de contraseña antihackerrr
                 .telefono(dto.getTelefono())
                 .rol(dto.getRol())
                 .fotoPerfil(dto.getFotoPerfil())
@@ -49,14 +52,14 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario usuario = usuarioRepository.findByCorreo(dto.getCorreo())
                 .orElseThrow(() -> new RuntimeException("Credenciales inválidas"));
 
-        if (!usuario.getPassword().equals(dto.getPassword())) {
+        if (!passwordEncoder.matches(dto.getPassword(), usuario.getPassword())){
             throw new RuntimeException("Credenciales inválidas");
         }
 
         return mapToResponseDTO(usuario);
     }
 
-    // Ejemplo en UsuarioServiceImpl o ReservaServiceImpl
+    //ejemplo en UsuarioServiceImpl o ReservaServiceImpl
     @Override
     @Transactional(readOnly = true)
     public UsuarioResponseDTO obtenerPorId(Long id) {
