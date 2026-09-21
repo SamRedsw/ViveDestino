@@ -77,13 +77,6 @@ public class Usuario {
         }
     }
 
-    public enum Rol {
-        VIAJERO, OPERADOR, GUIA, ADMIN
-    }
-
-    @OneToMany(mappedBy = "organizador", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Experiencia> experiencias;
-
     public enum RolUsuario {
         VIAJERO,
         GUIA,
