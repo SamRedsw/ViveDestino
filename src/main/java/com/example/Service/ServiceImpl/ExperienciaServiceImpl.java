@@ -3,9 +3,13 @@ package com.example.Service.ServiceImpl;
 import com.example.Dto.DtoCreate.ExperienciaCreateDTO;
 import com.example.Dto.ExperienciaResponseDTO;
 import com.example.Entity.Experiencia;
+import com.example.Entity.ImagenExperiencia;
+import com.example.Entity.Usuario;
 import com.example.Exception.ResourceNotFoundException;
 import com.example.Repository.ExperienciaRepository;
+import com.example.Repository.UsuarioRepository;
 import com.example.Service.ExperienciaService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,11 +22,17 @@ import java.util.stream.Collectors;
 public class ExperienciaServiceImpl implements ExperienciaService {
 
     private final ExperienciaRepository experienciaRepository;
+    private final UsuarioRepository usuarioRepository;
 
 
     @Override
     @Transactional
     public ExperienciaResponseDTO crearExperiencia(ExperienciaCreateDTO dto) {
+        // 1. Buscar el organizador por su ID
+        Usuario organizador = usuarioRepository.findById(dto.getIdOrganizador())
+                .orElseThrow(() -> new EntityNotFoundException("Organizador no encontrado con el ID: " + dto.getIdOrganizador()));
+
+        // 2. Construir la entidad con el organizador consultado
         Experiencia experiencia = Experiencia.builder()
                 .nombre(dto.getNombre())
                 .descripcion(dto.getDescripcion())
@@ -30,9 +40,13 @@ public class ExperienciaServiceImpl implements ExperienciaService {
                 .precio(dto.getPrecio())
                 .dificultad(Experiencia.Dificultad.valueOf(dto.getDificultad().toUpperCase()))
                 .estado(Experiencia.EstadoExperiencia.ACTIVA)
-                .organizador(dto.getOrganizador())
+                .duracion(dto.getDuracion())
+                .organizador(organizador)
+                .requisitos(dto.getRequisitos())
+                .politicaCancelacion(dto.getPoliticaCancelacion())
                 .build();
 
+        // 3. Guardar y mapear la respuesta
         Experiencia guardada = experienciaRepository.save(experiencia);
         return mapToResponseDTO(guardada);
     }
@@ -40,8 +54,9 @@ public class ExperienciaServiceImpl implements ExperienciaService {
     @Override
     @Transactional(readOnly = true)
     public List<ExperienciaResponseDTO> obtenerTodasPublicadas() {
-        return experienciaRepository.findByEstado("PUBLICADA")
-                .stream()
+        List<Experiencia> experiencias = experienciaRepository.findByEstado(Experiencia.EstadoExperiencia.ACTIVA);
+
+        return experiencias.stream()
                 .map(this::mapToResponseDTO)
                 .collect(Collectors.toList());
     }
@@ -61,6 +76,9 @@ public class ExperienciaServiceImpl implements ExperienciaService {
                 .nombre(e.getNombre())
                 .descripcion(e.getDescripcion())
                 .precio(e.getPrecio())
+                .duracion(e.getDuracion())
+                .requisitos(e.getRequisitos())
+                .politicaCancelacion(e.getPoliticaCancelacion())
                 .dificultad(e.getDificultad().name())
                 .estado(e.getEstado().name())
                 .build();

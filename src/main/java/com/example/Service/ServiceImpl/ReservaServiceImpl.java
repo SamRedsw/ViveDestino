@@ -94,6 +94,17 @@ public class ReservaServiceImpl implements ReservaService {
         return mapToResponseDTO(actualizada);
     }
 
+    @Override
+    @Transactional
+    public ReservaResponseDTO marcarAsistencia(Long idReserva) {
+        Reserva reserva = reservaRepository.findById(idReserva)
+                .orElseThrow(() -> new ResourceNotFoundException("Reserva no encontrada con ID: " + idReserva));
+
+        reserva.setAsistio(true);
+        Reserva actualizada = reservaRepository.save(reserva);
+        return mapToResponseDTO(actualizada);
+    }
+
     private ReservaResponseDTO mapToResponseDTO(Reserva r) {
         return ReservaResponseDTO.builder()
                 .idReserva(r.getIdReserva())

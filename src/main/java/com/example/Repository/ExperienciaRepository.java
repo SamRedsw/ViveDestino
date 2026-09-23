@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface ExperienciaRepository extends JpaRepository<Experiencia, Long> {
 
-    List<Experiencia> findByEstado(String estado);
+    List<Experiencia> findByEstado(Experiencia.EstadoExperiencia estado);
 
 }

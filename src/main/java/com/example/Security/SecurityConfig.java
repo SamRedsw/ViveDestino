@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -32,12 +34,10 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
 
+                        // 1. Peticiones de pre-flight CORS
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-
-                        .requestMatchers(HttpMethod.POST, "/api/usuarios", "/api/usuarios/", "/api/usuarios/login").permitAll()
-
-
+                        // 2. Swagger y documentación pública
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
@@ -46,8 +46,20 @@ public class SecurityConfig {
                                 "/webjars/**"
                         ).permitAll()
 
+                        // 3. Autenticación y registro de usuarios
+                        .requestMatchers(HttpMethod.POST, "/api/usuarios", "/api/usuarios/", "/api/usuarios/login").permitAll()
+
+                        // 4. Lectura pública de experiencias
                         .requestMatchers(HttpMethod.GET, "/api/experiencias/**").permitAll()
 
+                        .requestMatchers(HttpMethod.POST, "/api/experiencias/**")
+                        .hasAnyAuthority("ORGANIZADOR", "ROLE_ORGANIZADOR", "ADMINISTRADOR", "ROLE_ADMINISTRADOR")
+
+                        .requestMatchers(HttpMethod.GET, "/api/salidas/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/salidas/**")
+                        .hasAnyAuthority("ORGANIZADOR", "ROLE_ORGANIZADOR", "ADMINISTRADOR", "ROLE_ADMINISTRADOR")
+
+                        // 6. Cualquier otro endpoint requiere estar autenticado
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

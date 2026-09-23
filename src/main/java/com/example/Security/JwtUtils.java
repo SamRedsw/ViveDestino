@@ -28,6 +28,15 @@ public class JwtUtils {
                 .compact();
     }
 
+    public String obtenerRolDelToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("rol", String.class);
+    }
+
     public String obtenerCorreoDelToken(String token) {
         return obtenerClaims(token).getSubject();
     }
