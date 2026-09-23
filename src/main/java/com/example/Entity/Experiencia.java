@@ -42,17 +42,17 @@ public class Experiencia {
 
     @NotNull(message = "El precio base es obligatorio")
     @DecimalMin(value = "0.00", message = "El precio debe ser un valor positivo")
-    @Column(name = "precio_base", nullable = false, precision = 10, scale = 2)
+    @Column(name = "precio", nullable = false, precision = 10, scale = 2)
     private BigDecimal precio;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "requisitos" , columnDefinition = "TEXT")
     private String requisitos;
 
     @Column(name = "politica_cancelacion", columnDefinition = "TEXT")
     private String politicaCancelacion;
 
-    @Column(name = "duracion_horas")
-    private Integer duracionHoras;
+    @Column(name = "duracion")
+    private String duracion;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)

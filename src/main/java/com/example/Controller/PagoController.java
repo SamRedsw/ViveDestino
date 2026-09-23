@@ -3,6 +3,7 @@ package com.example.Controller;
 import com.example.Dto.DtoCreate.PagoCreateDTO;
 import com.example.Dto.PagoResponseDTO;
 import com.example.Service.PagoService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/pagos")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class PagoController {
 
     private final PagoService pagoService;

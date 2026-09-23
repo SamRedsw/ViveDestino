@@ -1,37 +1,42 @@
 package com.example.Dto.DtoCreate;
 
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.Min;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Schema(description = "Datos para la creación de una salida programada")
 public class SalidaCreateDTO {
 
-    @NotNull(message = "El ID de la experiencia es obligatorio")
+    @NotNull
+    @Schema(description = "ID de la experiencia asociada", example = "15")
     private Long idExperiencia;
 
-    @NotNull(message = "El ID del guía es obligatorio")
+    @NotNull
+    @Schema(description = "ID del guía asignado", example = "4")
     private Long idGuia;
 
-    @NotNull(message = "La fecha de salida es obligatoria")
+    @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @Schema(type = "string", description = "Fecha y hora de salida", example = "2026-09-23T01:04:51")
     private LocalDateTime fechaSalida;
 
-    @NotNull(message = "La hora de salida es obligatoria")
+    @NotNull
+    @JsonFormat(pattern = "HH:mm:ss")
+    @Schema(type = "string", description = "Hora específica de salida", example = "11:10:10")
     private LocalTime horaSalida;
 
-    @NotNull(message = "La fecha de retorno es obligatoria")
+    @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Schema(type = "string", description = "Fecha estimada de retorno", example = "2026-09-23")
     private LocalDate fechaRetorno;
 
-    @NotNull(message = "Los cupos totales son obligatorios")
-    @Min(value = 1, message = "Debe haber al menos 1 cupo")
+    @NotNull
+    @Schema(description = "Número de cupos totales disponibles", example = "10")
     private Integer cuposTotales;
 }

@@ -81,7 +81,7 @@ public class SalidaServiceImpl implements SalidaService {
                 .fechaSalida(s.getFechaSalida())
                 .horaSalida(s.getHoraSalida())
                 .fechaRetorno(s.getFechaRetorno())
-                .cupoTotal(s.getCupoMaximo())
+                .cupoMaximo(s.getCupoMaximo())
                 .cuposDisponibles(s.getCuposDisponibles())
                 .estadoOperativo(s.getEstadoOperativo().name())
                 .build();

@@ -1,6 +1,5 @@
 package com.example.Service.ServiceImpl;
 
-
 import com.example.Dto.DtoRegistration.UsuarioRegistrationDTO;
 import com.example.Dto.DtoRequest.LoginRequestDTO;
 import com.example.Dto.UsuarioResponseDTO;
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
 public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
-
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -34,12 +32,11 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario usuario = Usuario.builder()
                 .nombre(dto.getNombre())
                 .correo(dto.getCorreo())
-                .password(passwordEncoder.encode(dto.getPassword())) //encriptacion de contraseña antihackerrr
+                .password(passwordEncoder.encode(dto.getPassword()))
                 .telefono(dto.getTelefono())
                 .rol(dto.getRol())
                 .fotoPerfil(dto.getFotoPerfil())
-                .estado(dto.getEstado())
-                .fechaRegistro(dto.getFechaRegistro())
+                .estado(dto.getEstado() != null ? dto.getEstado() : "ACTIVO")
                 .build();
 
         Usuario guardado = usuarioRepository.save(usuario);
@@ -59,7 +56,6 @@ public class UsuarioServiceImpl implements UsuarioService {
         return mapToResponseDTO(usuario);
     }
 
-    //ejemplo en UsuarioServiceImpl o ReservaServiceImpl
     @Override
     @Transactional(readOnly = true)
     public UsuarioResponseDTO obtenerPorId(Long id) {

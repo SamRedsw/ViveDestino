@@ -38,5 +38,6 @@ public class UsuarioRegistrationDTO {
 
     private String estado = "ACTIVO";
 
+
     private LocalDateTime fechaRegistro;
 }

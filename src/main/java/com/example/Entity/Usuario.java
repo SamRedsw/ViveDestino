@@ -19,7 +19,7 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_usuario")
+    @Column(name = "id")
     private Long idUsuario;
 
     @NotBlank(message = "El nombre es obligatorio")
@@ -81,6 +81,6 @@ public class Usuario {
         VIAJERO,
         GUIA,
         ADMINISTRADOR,
-        OPERADOR
+        ORGANIZADOR
     }
 }

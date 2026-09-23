@@ -24,7 +24,7 @@ public class SalidaResponseDTO {
     private LocalDateTime fechaSalida;
     private LocalTime horaSalida;
     private LocalDate fechaRetorno;
-    private Integer cupoTotal;
+    private Integer cupoMaximo;
     private Integer cuposDisponibles;
     private String estadoOperativo;
 }
